@@ -1,53 +1,96 @@
 
-//ATM interface
-import java.util.*;
+import java.util.Scanner;
+
+class BankAccount {
+    private double balance;
+
+    public BankAccount(double initialBalance) {
+        balance = initialBalance;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            System.out.println("Deposited $" + amount + ". New balance: $" + balance);
+        } else {
+            System.out.println("Invalid deposit amount.");
+        }
+    }
+
+    public void withdraw(double amount) {
+        if (amount > 0) {
+            if (balance >= amount) {
+                balance -= amount;
+                System.out.println("Withdrew $" + amount + ". New balance: $" + balance);
+            } else {
+                System.out.println("Insufficient balance.");
+            }
+        } else {
+            System.out.println("Invalid withdrawal amount.");
+        }
+    }
+
+    public void checkBalance() {
+        System.out.println("Your balance is $" + balance);
+    }
+}
 
 class ATM {
-    int balance;
-    Scanner sc = new Scanner(System.in);
-    int db = sc.nextInt();
+    private BankAccount account;
 
-    void deposite(int db) {
-        System.out.println("Enter the amount : ");
-        balance += db;
+    public ATM(BankAccount account) {
+        this.account = account;
     }
 
-    void withdraw(int db) {
+    public void displayMenu() {
+        System.out.println("Welcome to the ATM!");
+        System.out.println("1. Check Balance");
+        System.out.println("2. Deposit");
+        System.out.println("3. Withdraw");
+        System.out.println("4. Quit");
+    }
 
-        if (db < balance) {
-            balance -= db;
-            System.out.println("Remaining balance is : " + balance);
-        } else {
-            System.out.println("Insuficient Balance");
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
 
+        while (true) {
+            displayMenu();
+            System.out.print("Please select an option (1/2/3/4): ");
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    account.checkBalance();
+                    break;
+                case "2":
+                    System.out.print("Enter the deposit amount: $");
+                    double depositAmount = Double.parseDouble(scanner.nextLine());
+                    account.deposit(depositAmount);
+                    break;
+                case "3":
+                    System.out.print("Enter the withdrawal amount: $");
+                    double withdrawAmount = Double.parseDouble(scanner.nextLine());
+                    account.withdraw(withdrawAmount);
+                    break;
+                case "4":
+                    System.out.println("Thank you for using the ATM. Goodbye!");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
         }
-
-    }
-
-    void checkbalnce() {
-        System.out.println("The Account balance is : " + balance);
     }
 }
 
 public class Task3 {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter your initial account balance: $");
+        double initialBalance = Double.parseDouble(scanner.nextLine());
 
-        ATM user1 = new ATM();
-        System.out.println("Welcome to ATM");
-        System.out.println("1.Deposite");
-        System.out.println("2.Withdraw");
-        System.out.println("3.Checkbalance");
-        System.out.println("4.Exit");
-        Scanner sc = new Scanner(System.in);
-        int ch = sc.nextInt();
-        switch (ch) {
-            case 1:
-                user1.deposite();
-                break;
-
-            default:
-                break;
-        }
+        BankAccount userAccount = new BankAccount(initialBalance);
+        ATM atm = new ATM(userAccount);
+        atm.run();
     }
-
 }
